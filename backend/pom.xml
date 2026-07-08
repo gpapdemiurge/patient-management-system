@@ -91,6 +91,11 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-database-postgresql</artifactId>
 		</dependency>
+		<!-- Spring Boot starter for Flyway provides auto-configuration and creates the Flyway bean -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-flyway</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -142,17 +147,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.flywaydb</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<version>12.4.0</version>
-				<configuration>
-					<url>jdbc:postgresql://ep-green-fire-aselsjx3-pooler.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&amp;channel_binding=require</url>
-					<user>neondb_owner</user>
-					<password>npg_EGHuZ8Almg5c</password>
-					<defaultSchema>hospital</defaultSchema>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
