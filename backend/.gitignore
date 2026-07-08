@@ -1,0 +1,152 @@
+HELP.md
+
+# =========================
+# Java / Maven / Spring Boot
+# =========================
+
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+.mvn/wrapper/maven-wrapper.jar
+
+*.class
+*.log
+
+
+# =========================
+# STS / Eclipse
+# =========================
+
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+
+# =========================
+# IntelliJ IDEA
+# =========================
+
+.idea/
+*.iws
+*.iml
+*.ipr
+
+
+# =========================
+# NetBeans
+# =========================
+
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+
+# =========================
+# VS Code
+# =========================
+
+.vscode/
+
+
+# =========================
+# React / Node / Vite
+# =========================
+
+node_modules/
+frontend/node_modules/
+
+dist/
+frontend/dist/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# =========================
+# Environment variables
+# =========================
+
+.env
+.env.local
+.env.*.local
+
+**/.env
+**/.env.*
+
+backend/src/main/resources/application-local.properties
+backend/src/main/resources/application-secret.properties
+
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-secret.yml
+
+
+# =========================
+# Spring Boot generated files
+# =========================
+
+*.pid
+*.hprof
+
+
+# =========================
+# Docker
+# =========================
+
+docker-compose.override.yml
+*.docker
+
+
+# =========================
+# Kubernetes secrets
+# =========================
+
+k8s/**/secret.yaml
+k8s/**/secrets/
+*.key
+*.pem
+
+
+# =========================
+# Helm
+# =========================
+
+helm/**/charts/
+helm/**/tmp/
+
+
+# =========================
+# Ansible
+# =========================
+
+*.retry
+
+
+# =========================
+# OS files
+# =========================
+
+.DS_Store
+Thumbs.db
+
+
+# =========================
+# Temporary files
+# =========================
+
+*.tmp
+*.temp
+*.swp
+*.swo
