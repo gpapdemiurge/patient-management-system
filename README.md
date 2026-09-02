@@ -4,6 +4,275 @@
 
 This project is a full-stack Patient Management System built as a real-world DevOps learning project.
 
+## short prokect description
+
+what do i need to implement
+
+
+1. UserService
+
+Your users table contains:
+
+users
+├── id
+├── username
+├── email
+├── password
+├── role
+└── created_at
+
+Keep the service simple:
+
+public interface UserService {
+
+    User createUser(User user);
+
+    List<User> getAllUsers();
+
+    User getUserById(Long id);
+
+    User updateUser(Long id, User user);
+
+    void deleteUser(Long id);
+}
+
+So your API could be:
+
+POST   /api/users
+GET    /api/users
+GET    /api/users/{id}
+PUT    /api/users/{id}
+DELETE /api/users/{id}
+
+For your course, you could have roles such as:
+
+ADMIN
+DOCTOR
+
+You don't need complicated authentication/authorization initially.
+
+2. PatientService
+
+This should probably be your main CRUD functionality.
+
+Your table:
+
+patients
+├── id
+├── first_name
+├── last_name
+├── date_of_birth
+├── gender
+├── phone
+├── email
+├── address
+└── created_at
+
+Service:
+
+public interface PatientService {
+
+    Patient createPatient(Patient patient);
+
+    List<Patient> getAllPatients();
+
+    Patient getPatientById(Long id);
+
+    Patient updatePatient(Long id, Patient patient);
+
+    void deletePatient(Long id);
+}
+
+API:
+
+POST   /api/patients
+GET    /api/patients
+GET    /api/patients/{id}
+PUT    /api/patients/{id}
+DELETE /api/patients/{id}
+
+For example:
+
+POST /api/patients
+
+with:
+
+{
+    "firstName": "John",
+    "lastName": "Smith",
+    "dateOfBirth": "1985-05-12",
+    "gender": "MALE",
+    "phone": "6900000000",
+    "email": "john@example.com",
+    "address": "Athens"
+}
+3. AppointmentService
+
+This is where your three tables actually connect.
+
+Your appointment has:
+
+appointments
+├── id
+├── patient_id  → patients.id
+├── doctor_id   → users.id
+├── appointment_date
+├── reason
+└── status
+
+For a basic application, I would implement:
+
+public interface AppointmentService {
+
+    Appointment createAppointment(Appointment appointment);
+
+    List<Appointment> getAllAppointments();
+
+    Appointment getAppointmentById(Long id);
+
+    Appointment updateAppointment(Long id, Appointment appointment);
+
+    void deleteAppointment(Long id);
+}
+
+API:
+
+POST   /api/appointments
+GET    /api/appointments
+GET    /api/appointments/{id}
+PUT    /api/appointments/{id}
+DELETE /api/appointments/{id}
+The entire backend
+
+You can therefore have a very simple structure:
+
+backend
+│
+└── src/main/java/com/yourapp
+    │
+    ├── controller
+    │   ├── UserController.java
+    │   ├── PatientController.java
+    │   └── AppointmentController.java
+    │
+    ├── service
+    │   ├── UserService.java
+    │   ├── PatientService.java
+    │   └── AppointmentService.java
+    │
+    ├── service/impl
+    │   ├── UserServiceImpl.java
+    │   ├── PatientServiceImpl.java
+    │   └── AppointmentServiceImpl.java
+    │
+    ├── repository
+    │   ├── UserRepository.java
+    │   ├── PatientRepository.java
+    │   └── AppointmentRepository.java
+    │
+    └── entity
+        ├── User.java
+        ├── Patient.java
+        └── Appointment.java
+
+The flow is:
+
+React
+  │
+  │ HTTP
+  ↓
+Controller
+  │
+  ↓
+Service
+  │
+  ↓
+Repository
+  │
+  ↓
+JPA / Hibernate
+  │
+  ↓
+PostgreSQL
+How the Appointment part works
+
+This is the only part that is slightly more interesting because you have relationships.
+
+You have:
+
+Patient
+   │
+   │ 1
+   │
+   │
+   │ *
+Appointment
+   │
+   │ *
+   │
+   │ 1
+Doctor/User
+
+So an appointment belongs to:
+
+one patient
+
+and
+
+one doctor.
+
+Your Appointment entity could look roughly like:
+
+@Entity
+@Table(name = "appointments", schema = "hospital")
+public class Appointment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
+
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private User doctor;
+
+    private LocalDateTime appointmentDate;
+
+    private String reason;
+
+    private String status;
+
+    // getters and setters
+}
+
+Then you could create an appointment like:
+
+{
+    "patientId": 5,
+    "doctorId": 2,
+    "appointmentDate": "2026-09-05T10:30:00",
+    "reason": "Regular checkup",
+    "status": "SCHEDULED"
+}
+
+Your backend finds:
+
+patient_id = 5
+       ↓
+Patient #5
+
+doctor_id = 2
+       ↓
+User #2
+
+Patient services 
+
+-cancel appointment 
+
+
 The goal is to learn and implement modern software engineering practices using:
 
 - React

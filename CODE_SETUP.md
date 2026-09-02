@@ -20,7 +20,6 @@ Under com.gpapdemiurge.backend.dto, create request/response DTOs to decouple API
 
 Step 4 — Service Layer
 Under com.gpapdemiurge.backend.service, create interfaces + implementations:
-
 PatientService — CRUD + pagination
 AppointmentService — CRUD, plus business rules (e.g., can't book appointment in the past)
 UserService — registration with BCrypt password hashing
