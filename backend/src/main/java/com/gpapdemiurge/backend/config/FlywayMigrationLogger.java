@@ -6,6 +6,7 @@ import org.flywaydb.core.api.MigrationInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * and applying them to the configured schema.
  */
 @Configuration
+@ConditionalOnBean(Flyway.class)
 public class FlywayMigrationLogger implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(FlywayMigrationLogger.class);
