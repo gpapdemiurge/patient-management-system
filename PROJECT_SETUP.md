@@ -327,3 +327,11 @@ GitHub Actions:
 ```text
 .github/workflows/
 ```
+
+
+# run backend 
+
+$env:SPRING_PROFILES_ACTIVE='local'
+$env:LOCAL_FLYWAY_ENABLED='true'
+$env:SPRING_MAIN_WEB_APPLICATION_TYPE='none'
+.\mvnw.cmd spring-boot:run -DskipTests=true

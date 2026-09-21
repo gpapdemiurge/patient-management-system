@@ -1,5 +1,6 @@
 package com.gpapdemiurge.backend.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return an {@link Optional} containing the user if found, otherwise empty
      */
     Optional<User> findByUsername(String username);
+
+    Optional<User> findByEmail(String email);
+
+    List<User> findByRole(com.gpapdemiurge.backend.entity.Role role);
 }

@@ -67,6 +67,20 @@ public class JwtUtil {
     }
 
     /**
+     * Convenience method to create a token from a username (no authorities claim).
+     */
+    public String generateTokenFromUsername(String username) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + jwtExpirationMs);
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    /**
      * Validates that the given token is well-formed, correctly signed, and not expired.
      *
      * @param token the raw JWT string extracted from the {@code Authorization} header

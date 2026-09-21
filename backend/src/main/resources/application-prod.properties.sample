@@ -1,0 +1,22 @@
+# Production profile sample for deploying to your Ubuntu server
+# Copy to application-prod.properties and fill values or set equivalent environment variables
+
+# Datasource (Postgres)
+spring.datasource.url=jdbc:postgresql://localhost:5432/hospital
+spring.datasource.username=your_db_user
+spring.datasource.password=your_db_password
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# Use validate in prod to avoid accidental schema changes
+spring.jpa.hibernate.ddl-auto=validate
+
+# Flyway: enable in production
+spring.flyway.enabled=true
+# Ensure Flyway uses the schema your app expects
+spring.flyway.schemas=HOSPITAL
+
+# Optional: location if you have custom folder
+# spring.flyway.locations=classpath:db/migration
+
+# Logging
+logging.level.org.flywaydb=INFO

@@ -22,7 +22,7 @@ import lombok.Setter;
 public class ApiError {
 
     /** When the error occurred. */
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime timestamp;
 
     /** HTTP status code (e.g. {@code 404}). */

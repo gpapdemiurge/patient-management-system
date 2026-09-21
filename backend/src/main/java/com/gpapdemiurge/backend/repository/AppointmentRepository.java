@@ -25,4 +25,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      * @return a list of appointments (possibly empty, never {@code null})
      */
     List<Appointment> findByPatientId(Long patientId);
+
+    /**
+     * Find appointments for a given doctor.
+     */
+    List<Appointment> findByDoctorId(Long doctorId);
+
+    /**
+     * Find appointments by status.
+     */
+    List<Appointment> findByStatus(com.gpapdemiurge.backend.entity.AppointmentStatus status);
 }
