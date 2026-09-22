@@ -335,3 +335,19 @@ $env:SPRING_PROFILES_ACTIVE='local'
 $env:LOCAL_FLYWAY_ENABLED='true'
 $env:SPRING_MAIN_WEB_APPLICATION_TYPE='none'
 .\mvnw.cmd spring-boot:run -DskipTests=true
+
+
+
+spring.application.name=backend
+spring.datasource.url=jdbc:postgresql://ep-green-fire-aselsjx3-pooler.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&currentSchema=hospital
+spring.datasource.username=neondb_owner
+spring.datasource.password=npg_EGHuZ8Almg5c
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# migration command
+
+$env:DATABASE_URL = "jdbc:postgresql://ep-green-fire-aselsjx3-pooler.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&currentSchema=hospital"
+$env:DATABASE_USERNAME = "neondb_owner"
+$env:DATABASE_PASSWORD = "npg_EGHuZ8Almg5c"
+.\mvnw.cmd flyway:migrate
+.\mvnw.cmd spring-boot:run -DskipTests=true
