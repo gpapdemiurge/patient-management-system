@@ -23,9 +23,8 @@ import com.gpapdemiurge.backend.security.filter.JwtAuthenticationFilter;
  * <p>Sets up stateless JWT authentication:
  *
  * <ol>
- *   <li>{@code /api/auth/**} and {@code /v3/api-docs/**} are public (no
- *   auth required).</li>
- *   <li>Every other request requires authentication.</li>
+ *   <li>{@code /api/auth/login} is public (no auth required).</li>
+ *   <li>{@code /api/auth/me} and every other request require authentication.</li>
  *   <li>Session management is {@link SessionCreationPolicy#STATELESS} so no
  *   server-side session is created – each request must carry a valid JWT.</li>
  *   <li>CSRF is disabled (intended for a stateless JWT‑based API).</li>
@@ -55,11 +54,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults()) // for Swagger UI / testing
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/auth/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/me").authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

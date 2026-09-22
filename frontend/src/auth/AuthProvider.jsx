@@ -1,46 +1,46 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useEffect } from 'react';
-import api, { setAuthToken } from '../lib/axios';
-
-const AuthContext = createContext(null);
+import { useEffect, useState } from 'react';
+import { AuthContext } from './AuthContext';
+import { getCurrentUser, login, logout } from './auth';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setAuthToken(token);
-      api.get('/api/auth/me').then(res => setUser(res.data)).catch(() => {
-        localStorage.removeItem('token');
-        setAuthToken(null);
+    let active = true;
+
+    getCurrentUser()
+      .then((profile) => {
+        if (active) {
+          setUser(profile);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          logout();
+          setUser(null);
+        }
       });
-    }
+
+    return () => {
+      active = false;
+    };
   }, []);
 
-  const login = async (username, password) => {
-    const res = await api.post('/api/auth/login', { username, password });
-    const token = res.data.token;
-    localStorage.setItem('token', token);
-    setAuthToken(token);
-    const profile = await api.get('/api/auth/me');
-    setUser(profile.data);
-    return profile.data;
+  const handleLogin = async (username, password) => {
+    await login(username, password);
+    const profile = await getCurrentUser();
+    setUser(profile);
+    return profile;
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setAuthToken(null);
+  const handleLogout = () => {
+    logout();
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login: handleLogin, logout: handleLogout }}>
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
 }

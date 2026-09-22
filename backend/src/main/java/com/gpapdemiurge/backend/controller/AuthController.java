@@ -1,13 +1,17 @@
 package com.gpapdemiurge.backend.controller;
 
-import com.gpapdemiurge.backend.security.JwtUtil;
-import com.gpapdemiurge.backend.service.AuthService;
 import com.gpapdemiurge.backend.entity.User;
 import com.gpapdemiurge.backend.repository.UserRepository;
-import org.springframework.security.core.Authentication;
+import com.gpapdemiurge.backend.security.AuthenticationService;
+import com.gpapdemiurge.backend.security.dto.JwtResponse;
+import com.gpapdemiurge.backend.security.dto.LoginRequest;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,66 +21,39 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
-    private final JwtUtil jwtUtils;
+    private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
 
-    public AuthController(AuthService authService, JwtUtil jwtUtils, UserRepository userRepository) {
-        this.authService = authService;
-        this.jwtUtils = jwtUtils;
+    public AuthController(AuthenticationService authenticationService,
+                          UserRepository userRepository) {
+        this.authenticationService = authenticationService;
         this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        // authenticate and return JWT
-        String username = authService.authenticate(request.getUsername(), request.getPassword());
-        String token = jwtUtils.generateTokenFromUsername(username);
-        return ResponseEntity.ok(new LoginResponse(token));
+    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
-    @org.springframework.web.bind.annotation.GetMapping("/me")
-    public ResponseEntity<UserProfile> me(org.springframework.security.core.Authentication authentication,
-                                          @org.springframework.web.bind.annotation.RequestHeader(value = "Authorization", required = false) String authHeader) {
-        String username = null;
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            username = authentication.getName();
+    @GetMapping("/me")
+    public ResponseEntity<UserProfile> me(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        if (username == null && authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            if (jwtUtils.validateToken(token)) {
-                username = jwtUtils.getUsernameFromToken(token);
-            } else {
-                return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
-            }
-        }
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new IllegalStateException("Authenticated user not found"));
 
-        if (username == null) {
-            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
-        }
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        UserProfile profile = new UserProfile(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
-        return ResponseEntity.ok(profile);
+        return ResponseEntity.ok(new UserProfile(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole().name()
+        ));
     }
 
     @Data
-    public static class LoginRequest {
-        private String username;
-        private String password;
-    }
-
-    @Data
-    public static class LoginResponse {
-        private final String token;
-    }
-
-    @lombok.Data
-    @lombok.AllArgsConstructor
+    @AllArgsConstructor
     public static class UserProfile {
         private Long id;
         private String username;

@@ -3,7 +3,7 @@ package com.gpapdemiurge.backend.security;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -58,8 +58,8 @@ public class AuthenticationService {
         // Resolve the user's role for the response so the frontend can
         // redirect ADMINs and DOCTORs to the correct panel.
         Role role = userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new AuthenticationException(
-                        "Authenticated user no longer exists in the database") {})
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "Authenticated user no longer exists in the database"))
                 .getRole();
 
         return new JwtResponse(token, userDetails.getUsername(), role.name());
